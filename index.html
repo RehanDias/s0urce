@@ -13,6 +13,7 @@
                 extend: {
                     animation: {
                         'gradient': 'gradient 15s ease infinite',
+                        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         gradient: {
@@ -22,6 +23,14 @@
                             '50%': {
                                 'background-position': '100% 50%'
                             },
+                        },
+                        pulse: {
+                            '0%, 100%': {
+                                opacity: 1
+                            },
+                            '50%': {
+                                opacity: .5
+                            }
                         }
                     }
                 }
@@ -41,11 +50,15 @@
             <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-blue-600 mx-auto"></div>
             <p class="mt-4 text-sm sm:text-base text-gray-600">Locating and preparing to share...</p>
         </div>
+        <div id="error" class="hidden mt-6 text-red-500 text-sm sm:text-base"></div>
+        <div id="result" class="hidden mt-6 text-left text-sm sm:text-base"></div>
     </div>
 
     <script>
         const getIpBtn = document.getElementById('get-ip-btn');
         const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+        const resultElement = document.getElementById('result');
 
         function getRegionEmoji(continentCode) {
             const regionMap = {
@@ -64,11 +77,9 @@
 
         async function getDeviceInfo() {
             const deviceInfo = {
-                deviceType: navigator.userAgent,
-                os: navigator.platform,
-                osDetailed: getOS(),
-                browser: navigator.appName,
-                browserVersion: navigator.appVersion,
+                deviceType: /mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+                os: getOS(),
+                browser: getBrowser(),
                 screenResolution: `${screen.width} x ${screen.height}`,
                 localTime: new Date().toLocaleString(),
                 browserLanguage: navigator.language,
@@ -76,13 +87,7 @@
                 cookiesEnabled: navigator.cookieEnabled ? 'Yes' : 'No',
                 userAgent: navigator.userAgent,
                 maxTouchPoints: navigator.maxTouchPoints || 'Not supported',
-                jsVersion: (function() {
-                    if (typeof Symbol === "function") return "ES6";
-                    if (typeof Promise === "function") return "ES6";
-                    if (typeof Proxy === "function") return "ES6";
-                    if (typeof Map === "function") return "ES6";
-                    return "ES5 or lower";
-                })(),
+                jsVersion: getJSVersion(),
                 batteryLevel: 'N/A',
                 chargingStatus: 'N/A',
                 connectionType: navigator.connection ? navigator.connection.effectiveType : 'Not supported',
@@ -97,96 +102,118 @@
                 incognito: 'Not supported',
                 colorDepth: `${screen.colorDepth}-bit`,
                 viewportSize: `${window.innerWidth} x ${window.innerHeight}`,
-                geolocation: 'Not supported',
-                networkSpeed: navigator.connection ? navigator.connection.downlink : 'Not supported'
+                networkSpeed: navigator.connection ? `${navigator.connection.downlink} Mbps` : 'Not supported'
             };
 
-            // Battery info
-            const battery = await navigator.getBattery();
-            deviceInfo.batteryLevel = Math.round(battery.level * 100) + '%';
-            deviceInfo.chargingStatus = battery.charging ? 'Charging' : 'Not Charging';
+            try {
+                const battery = await navigator.getBattery();
+                deviceInfo.batteryLevel = Math.round(battery.level * 100) + '%';
+                deviceInfo.chargingStatus = battery.charging ? 'Charging' : 'Not Charging';
+            } catch (error) {
+                console.error('Battery API not supported:', error);
+            }
 
-            // GPU info
             const gpuInfo = getGPUInfo();
             deviceInfo.gpuRenderer = gpuInfo.renderer;
             deviceInfo.gpuVendor = gpuInfo.vendor;
 
-            // Geolocation info
-            if (navigator.geolocation) {
-                const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject);
-                });
-                deviceInfo.geolocation = `Lat: ${position.coords.latitude}, Long: ${position.coords.longitude}`;
-            } else {
-                deviceInfo.geolocation = 'Not supported';
-            }
-
-            // Incognito mode detection
-            let fs = window.RequestFileSystem || window.webkitRequestFileSystem;
-            if (!fs) {
-                deviceInfo.incognito = 'Not supported';
-            } else {
-                fs(window.TEMPORARY, 100, function() {
-                    deviceInfo.incognito = 'No';
-                }, function() {
-                    deviceInfo.incognito = 'Yes';
-                });
-            }
+            deviceInfo.incognito = await isIncognito();
 
             return deviceInfo;
         }
 
         function getOS() {
-            let userAgent = window.navigator.userAgent,
-                platform = window.navigator?.userAgentData?.platform || window.navigator.platform,
-                macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-                windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-                iosPlatforms = ['iPhone', 'iPad', 'iPod'],
-                os = null;
+            const userAgent = window.navigator.userAgent;
+            const platform = window.navigator?.userAgentData?.platform || window.navigator.platform;
+            const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+            const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+            const iosPlatforms = ['iPhone', 'iPad', 'iPod'];
 
-            if (macosPlatforms.indexOf(platform) !== -1) {
-                os = 'Mac OS';
-            } else if (iosPlatforms.indexOf(platform) !== -1) {
-                os = 'iOS';
-            } else if (windowsPlatforms.indexOf(platform) !== -1) {
-                os = 'Windows';
-            } else if (/Android/.test(userAgent)) {
-                os = 'Android';
-            } else if (!os && /Linux/.test(platform)) {
-                os = 'Linux';
+            if (macosPlatforms.indexOf(platform) !== -1) return 'Mac OS';
+            if (iosPlatforms.indexOf(platform) !== -1) return 'iOS';
+            if (windowsPlatforms.indexOf(platform) !== -1) return 'Windows';
+            if (/Android/.test(userAgent)) return 'Android';
+            if (/Linux/.test(platform)) return 'Linux';
+
+            return 'Unknown OS';
+        }
+
+        function getBrowser() {
+            const userAgent = navigator.userAgent;
+            let browser = "Unknown";
+
+            if (userAgent.indexOf("Firefox") > -1) {
+                browser = "Mozilla Firefox";
+            } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+                browser = "Opera";
+            } else if (userAgent.indexOf("Trident") > -1) {
+                browser = "Microsoft Internet Explorer";
+            } else if (userAgent.indexOf("Edge") > -1) {
+                browser = "Microsoft Edge (Legacy)";
+            } else if (userAgent.indexOf("Edg") > -1) {
+                browser = "Microsoft Edge (Chromium)";
+            } else if (userAgent.indexOf("Chrome") > -1) {
+                browser = "Google Chrome";
+            } else if (userAgent.indexOf("Safari") > -1) {
+                browser = "Apple Safari";
             }
 
-            return os;
+            return browser;
+        }
+
+        function getJSVersion() {
+            if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol" && typeof BigInt === "function") return "ES10+";
+            if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") return "ES6+";
+            if (typeof Promise === "function") return "ES6";
+            return "ES5 or lower";
         }
 
         function getGPUInfo() {
-            let canvas = document.createElement('canvas');
-            let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            if (gl) {
-                let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                let vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                let renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                return { vendor, renderer };
-            } else {
+            const canvas = document.createElement('canvas');
+            let gl;
+            try {
+                gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            } catch (e) {
                 return { vendor: 'Not supported', renderer: 'Not supported' };
             }
+            if (gl) {
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                if (debugInfo) {
+                    return {
+                        vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
+                        renderer: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+                    };
+                }
+            }
+            return { vendor: 'Not supported', renderer: 'Not supported' };
+        }
+
+        async function isIncognito() {
+            if ('storage' in navigator && 'estimate' in navigator.storage) {
+                const { quota } = await navigator.storage.estimate();
+                if (quota < 120000000) {
+                    return 'Yes';
+                } else {
+                    return 'No';
+                }
+            }
+            return 'Not supported';
         }
 
         getIpBtn.addEventListener('click', async function() {
             loadingElement.classList.remove('hidden');
             getIpBtn.classList.add('hidden');
+            errorElement.classList.add('hidden');
+            resultElement.classList.add('hidden');
 
             try {
-                // Get IP information
                 const ipResponse = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipResponse.json();
                 const locationResponse = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
                 const locationData = await locationResponse.json();
 
-                // Get device information
                 const deviceInfo = await getDeviceInfo();
 
-                // Prepare message
                 const regionEmoji = getRegionEmoji(locationData.continent_code);
                 const countryEmoji = getCountryEmoji(locationData.country);
                 const mapsUrl = `https://www.google.com/maps?q=${locationData.latitude},${locationData.longitude}`;
@@ -203,9 +230,7 @@ ${countryEmoji} Country: ${locationData.country_name}
 📱 Device Information:
 Device Type: ${deviceInfo.deviceType}
 Operating System: ${deviceInfo.os}
-Operating System (Detailed): ${deviceInfo.osDetailed}
 Browser: ${deviceInfo.browser}
-Browser Version: ${deviceInfo.browserVersion}
 Screen Resolution: ${deviceInfo.screenResolution}
 Local Time: ${deviceInfo.localTime}
 Browser Language: ${deviceInfo.browserLanguage}
@@ -228,14 +253,17 @@ Number of Plugins: ${deviceInfo.numPlugins}
 Incognito Mode: ${deviceInfo.incognito}
 Color Depth: ${deviceInfo.colorDepth}
 Viewport Size: ${deviceInfo.viewportSize}
-Geolocation: ${deviceInfo.geolocation}
 Estimated Network Speed: ${deviceInfo.networkSpeed}`;
+
+                resultElement.innerHTML = message.replace(/\n/g, '<br>');
+                resultElement.classList.remove('hidden');
 
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to retrieve information. Please try again.');
+                errorElement.textContent = 'Failed to retrieve information. Please try again.';
+                errorElement.classList.remove('hidden');
             } finally {
                 loadingElement.classList.add('hidden');
                 getIpBtn.classList.remove('hidden');
