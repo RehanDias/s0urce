@@ -4,13 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP Locator Pro</title>
+    <title>Digital Footprint Analyzer</title>
+    <meta name="description" content="Analyze and share your digital footprint securely with Digital Footprint Analyzer.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" media="print" onload="this.media='all'">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        'primary': '#4F46E5',
+                        'primary-hover': '#3730A3',
+                        'secondary': '#EC4899',
+                        'secondary-hover': '#C026D3',
+                    },
                     animation: {
                         'gradient': 'gradient 15s ease infinite',
                         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -39,43 +46,48 @@
     </script>
 </head>
 
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 animate-gradient bg-[length:400%_400%] p-4">
-    <div class="bg-white bg-opacity-90 p-6 sm:p-8 rounded-lg shadow-2xl text-center w-full max-w-md">
-        <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">IP Locator Pro</h1>
-        <p class="text-sm sm:text-base text-gray-600 mb-6">Discover and share your digital footprint instantly!</p>
-        <button id="get-ip-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 ease-in-out transform hover:scale-105">
-            <i class="fas fa-globe mr-2"></i> Locate and Share
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-primary via-secondary to-secondary animate-gradient bg-[length:400%_400%] p-4">
+    <main class="bg-white bg-opacity-90 p-6 sm:p-8 rounded-lg shadow-2xl text-center w-full max-w-md">
+        <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">Digital Footprint Analyzer</h1>
+        <p class="text-sm sm:text-base text-gray-600 mb-6">Uncover and share your online presence securely!</p>
+        <button id="analyze-btn" class="w-full sm:w-auto bg-primary hover:bg-primary-hover text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-300 transition duration-300 ease-in-out transform hover:scale-105"
+            aria-label="Analyze and Share Digital Footprint">
+            <i class="fas fa-fingerprint mr-2" aria-hidden="true"></i> Analyze Footprint
         </button>
         <div id="loading" class="hidden mt-6">
-            <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-sm sm:text-base text-gray-600">Locating and preparing to share...</p>
+            <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
+            <p class="mt-4 text-sm sm:text-base text-gray-600">Analyzing digital footprint...</p>
         </div>
         <div id="error" class="hidden mt-6 text-red-500 text-sm sm:text-base"></div>
-        <div id="result" class="hidden mt-6 text-left text-sm sm:text-base"></div>
-    </div>
+    </main>
 
     <script>
-        const getIpBtn = document.getElementById('get-ip-btn');
+        const analyzeBtn = document.getElementById('analyze-btn');
         const loadingElement = document.getElementById('loading');
         const errorElement = document.getElementById('error');
-        const resultElement = document.getElementById('result');
 
-        function getRegionEmoji(continentCode) {
+        const getRegionEmoji = (continentCode) => {
             const regionMap = {
-                "AS": "🌏", "EU": "🌍", "AF": "🌍", "NA": "🌎", "SA": "🌎", "OC": "🌏", "AN": "❄️"
+                "AS": "🌏",
+                "EU": "🌍",
+                "AF": "🌍",
+                "NA": "🌎",
+                "SA": "🌎",
+                "OC": "🌏",
+                "AN": "❄️"
             };
             return regionMap[continentCode] || "🗺️";
-        }
+        };
 
-        function getCountryEmoji(countryCode) {
+        const getCountryEmoji = (countryCode) => {
             const codePoints = countryCode
                 .toUpperCase()
                 .split('')
                 .map(char => 127397 + char.charCodeAt());
             return String.fromCodePoint(...codePoints);
-        }
+        };
 
-        async function getDeviceInfo() {
+        const getDeviceInfo = async () => {
             const deviceInfo = {
                 deviceType: /mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
                 os: getOS(),
@@ -107,7 +119,7 @@
 
             try {
                 const battery = await navigator.getBattery();
-                deviceInfo.batteryLevel = Math.round(battery.level * 100) + '%';
+                deviceInfo.batteryLevel = `${Math.round(battery.level * 100)}%`;
                 deviceInfo.chargingStatus = battery.charging ? 'Charging' : 'Not Charging';
             } catch (error) {
                 console.error('Battery API not supported:', error);
@@ -120,61 +132,60 @@
             deviceInfo.incognito = await isIncognito();
 
             return deviceInfo;
-        }
+        };
 
-        function getOS() {
+        const getOS = () => {
             const userAgent = window.navigator.userAgent;
-            const platform = window.navigator?.userAgentData?.platform || window.navigator.platform;
+            const platform = window.navigator ? .userAgentData ? .platform || window.navigator.platform;
             const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
             const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
             const iosPlatforms = ['iPhone', 'iPad', 'iPod'];
 
-            if (macosPlatforms.indexOf(platform) !== -1) return 'Mac OS';
-            if (iosPlatforms.indexOf(platform) !== -1) return 'iOS';
-            if (windowsPlatforms.indexOf(platform) !== -1) return 'Windows';
+            if (macosPlatforms.includes(platform)) return 'Mac OS';
+            if (iosPlatforms.includes(platform)) return 'iOS';
+            if (windowsPlatforms.includes(platform)) return 'Windows';
             if (/Android/.test(userAgent)) return 'Android';
             if (/Linux/.test(platform)) return 'Linux';
 
             return 'Unknown OS';
-        }
+        };
 
-        function getBrowser() {
+        const getBrowser = () => {
             const userAgent = navigator.userAgent;
-            let browser = "Unknown";
+            const browsers = {
+                "Firefox": "Mozilla Firefox",
+                "OPR": "Opera",
+                "Trident": "Microsoft Internet Explorer",
+                "Edge": "Microsoft Edge (Legacy)",
+                "Edg": "Microsoft Edge (Chromium)",
+                "Chrome": "Google Chrome",
+                "Safari": "Apple Safari"
+            };
 
-            if (userAgent.indexOf("Firefox") > -1) {
-                browser = "Mozilla Firefox";
-            } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
-                browser = "Opera";
-            } else if (userAgent.indexOf("Trident") > -1) {
-                browser = "Microsoft Internet Explorer";
-            } else if (userAgent.indexOf("Edge") > -1) {
-                browser = "Microsoft Edge (Legacy)";
-            } else if (userAgent.indexOf("Edg") > -1) {
-                browser = "Microsoft Edge (Chromium)";
-            } else if (userAgent.indexOf("Chrome") > -1) {
-                browser = "Google Chrome";
-            } else if (userAgent.indexOf("Safari") > -1) {
-                browser = "Apple Safari";
+            for (const [key, value] of Object.entries(browsers)) {
+                if (userAgent.indexOf(key) > -1) return value;
             }
 
-            return browser;
-        }
+            return "Unknown Browser";
+        };
 
-        function getJSVersion() {
+        const getJSVersion = () => {
             if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol" && typeof BigInt === "function") return "ES10+";
             if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") return "ES6+";
             if (typeof Promise === "function") return "ES6";
             return "ES5 or lower";
-        }
+        };
 
-        function getGPUInfo() {
+        const getGPUInfo = () => {
             const canvas = document.createElement('canvas');
             let gl;
             try {
                 gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
             } catch (e) {
-                return { vendor: 'Not supported', renderer: 'Not supported' };
+                return {
+                    vendor: 'Not supported',
+                    renderer: 'Not supported'
+                };
             }
             if (gl) {
                 const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
@@ -185,40 +196,49 @@
                     };
                 }
             }
-            return { vendor: 'Not supported', renderer: 'Not supported' };
-        }
+            return {
+                vendor: 'Not supported',
+                renderer: 'Not supported'
+            };
+        };
 
-        async function isIncognito() {
+        const isIncognito = async () => {
             if ('storage' in navigator && 'estimate' in navigator.storage) {
-                const { quota } = await navigator.storage.estimate();
-                if (quota < 120000000) {
-                    return 'Yes';
-                } else {
-                    return 'No';
-                }
+                const {
+                    quota
+                } = await navigator.storage.estimate();
+                return quota < 120000000 ? 'Yes' : 'No';
             }
             return 'Not supported';
-        }
+        };
 
-        getIpBtn.addEventListener('click', async function() {
+        const getIpData = async () => {
+            const response = await fetch('https://api.ipify.org?format=json');
+            return response.json();
+        };
+
+        const getLocationData = async (ip) => {
+            const response = await fetch(`https://ipapi.co/${ip}/json/`);
+            return response.json();
+        };
+
+        analyzeBtn.addEventListener('click', async function() {
             loadingElement.classList.remove('hidden');
-            getIpBtn.classList.add('hidden');
+            analyzeBtn.classList.add('hidden');
             errorElement.classList.add('hidden');
-            resultElement.classList.add('hidden');
 
             try {
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipResponse.json();
-                const locationResponse = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
-                const locationData = await locationResponse.json();
-
+                const ipData = await getIpData();
+                const locationData = await getLocationData(ipData.ip);
                 const deviceInfo = await getDeviceInfo();
 
                 const regionEmoji = getRegionEmoji(locationData.continent_code);
                 const countryEmoji = getCountryEmoji(locationData.country);
                 const mapsUrl = `https://www.google.com/maps?q=${locationData.latitude},${locationData.longitude}`;
 
-                const message = `🌐 My Digital Footprint 🕵️‍♂️
+                const message = `🔍 Digital Footprint Analysis 🕵️‍♂️
+
+🌐 Network Information:
 📍 IP Address: ${ipData.ip}
 🏢 ISP: ${locationData.org}
 🏙️ City: ${locationData.city}
@@ -227,46 +247,44 @@ ${countryEmoji} Country: ${locationData.country_name}
 🧭 Coordinates: ${locationData.latitude}, ${locationData.longitude}
 🗺️ Google Maps: ${mapsUrl}
 
-📱 Device Information:
-Device Type: ${deviceInfo.deviceType}
-Operating System: ${deviceInfo.os}
-Browser: ${deviceInfo.browser}
-Screen Resolution: ${deviceInfo.screenResolution}
-Local Time: ${deviceInfo.localTime}
-Browser Language: ${deviceInfo.browserLanguage}
-Online Status: ${deviceInfo.onlineStatus}
-Cookies Enabled: ${deviceInfo.cookiesEnabled}
-User Agent: ${deviceInfo.userAgent}
-Max Touch Points: ${deviceInfo.maxTouchPoints}
-JavaScript Version: ${deviceInfo.jsVersion}
-Battery Level: ${deviceInfo.batteryLevel}
-Charging Status: ${deviceInfo.chargingStatus}
-Connection Type: ${deviceInfo.connectionType}
-Time Zone: ${deviceInfo.timeZone}
-CPU Cores: ${deviceInfo.cpuCores}
-Device Memory: ${deviceInfo.deviceMemory}
-Do Not Track: ${deviceInfo.doNotTrack}
-GPU Renderer: ${deviceInfo.gpuRenderer}
-GPU Vendor: ${deviceInfo.gpuVendor}
-Referrer: ${deviceInfo.referrer}
-Number of Plugins: ${deviceInfo.numPlugins}
-Incognito Mode: ${deviceInfo.incognito}
-Color Depth: ${deviceInfo.colorDepth}
-Viewport Size: ${deviceInfo.viewportSize}
-Estimated Network Speed: ${deviceInfo.networkSpeed}`;
+🤖 Device Type: ${deviceInfo.deviceType}
+💻 Operating System: ${deviceInfo.os}
+🌐 Browser: ${deviceInfo.browser}
+🖥️ Screen Resolution: ${deviceInfo.screenResolution}
+⏱️ Local Time: ${deviceInfo.localTime}
+🌍 Browser Language: ${deviceInfo.browserLanguage}
+🌐 Online Status: ${deviceInfo.onlineStatus}
+🍪 Cookies Enabled: ${deviceInfo.cookiesEnabled}
+🤖 User Agent: ${deviceInfo.userAgent}
+👆 Max Touch Points: ${deviceInfo.maxTouchPoints}
+💻 JavaScript Version: ${deviceInfo.jsVersion}
+🔋 Battery Level: ${deviceInfo.batteryLevel}
+⚡ Charging Status: ${deviceInfo.chargingStatus}
+📶 Connection Type: ${deviceInfo.connectionType}
+🌍 Time Zone: ${deviceInfo.timeZone}
+🧠 CPU Cores: ${deviceInfo.cpuCores}
+💾 Device Memory: ${deviceInfo.deviceMemory}
+🕵️‍♂️ Do Not Track: ${deviceInfo.doNotTrack}
+🎨 GPU Renderer: ${deviceInfo.gpuRenderer}
+🖥️ GPU Vendor: ${deviceInfo.gpuVendor}
+↩️ Referrer: ${deviceInfo.referrer}
+🔌 Number of Plugins: ${deviceInfo.numPlugins}
+🕵️‍♂️ Incognito Mode: ${deviceInfo.incognito}
+🖼️ Color Depth: ${deviceInfo.colorDepth}
+🖥️ Viewport Size: ${deviceInfo.viewportSize}
+📶 Estimated Network Speed: ${deviceInfo.networkSpeed}
 
-                resultElement.innerHTML = message.replace(/\n/g, '<br>');
-                resultElement.classList.remove('hidden');
+🔒REHAN DIAS CODE!`;
 
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
             } catch (error) {
                 console.error('Error:', error);
-                errorElement.textContent = 'Failed to retrieve information. Please try again.';
+                errorElement.textContent = `An error occurred: ${error.message}. Please try again.`;
                 errorElement.classList.remove('hidden');
             } finally {
                 loadingElement.classList.add('hidden');
-                getIpBtn.classList.remove('hidden');
+                analyzeBtn.classList.remove('hidden');
             }
         });
     </script>
