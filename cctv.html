@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +14,7 @@
                         secondary: '#4E31AA',
                         tertiary: '#3795BD',
                         light: '#F7F7F8',
+                        error: '#FF0000',
                     }
                 }
             },
@@ -47,17 +47,28 @@
 
 <body class="bg-light min-h-full font-sans text-gray-800 flex flex-col">
     <header class="bg-gradient-to-r from-primary to-secondary text-light shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-center">CCTV LIVE JAKARTA</h1>
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold">CCTV LIVE JAKARTA</h1>
+            <button id="sidebar-toggle" class="lg:hidden text-light focus:outline-none bg-tertiary hover:bg-secondary transition duration-300 ease-in-out px-3 py-2 rounded-md">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
         </div>
     </header>
 
-    <main class="flex-grow container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-        <aside class="lg:w-1/4 xl:w-1/5">
-            <div class="bg-white rounded-lg shadow-md p-4">
+    <main class="flex-grow container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+        <aside id="sidebar" class="lg:w-1/4 xl:w-1/5 hidden lg:block">
+            <div class="bg-white rounded-lg shadow-md p-4 sticky top-6">
                 <h2 class="text-xl font-semibold mb-4 text-primary">Camera Selection</h2>
-                <div id="camera-buttons" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-webkit">
+                <input type="text" id="search-bar" placeholder="Search cameras..." class="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-tertiary">
+                <div id="camera-buttons" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-webkit">
                     <!-- Camera buttons will be dynamically inserted here -->
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <button id="prev-page" class="px-3 py-1 bg-tertiary text-light rounded-md hover:bg-secondary transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">Prev</button>
+                    <span id="page-info" class="text-sm text-gray-600">Page 1 of 1</span>
+                    <button id="next-page" class="px-3 py-1 bg-tertiary text-light rounded-md hover:bg-secondary transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                 </div>
             </div>
         </aside>
@@ -66,26 +77,28 @@
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <div id="camera-container" class="relative w-full aspect-video">
                     <!-- iframe will be created dynamically here -->
-                    <div id="loading" class="absolute inset-0 flex items-center justify-center bg-light">
+                    <div id="loading" class="absolute inset-0 flex flex-col items-center justify-center bg-light">
                         <svg class="w-12 h-12 text-tertiary animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
+                        <p class="mt-2 text-tertiary">Loading...</p>
                     </div>
-                    <div id="not-found" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-red-50 text-red-600">
+                    <div id="not-found" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-light text-error">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                         <h2 class="text-2xl font-bold mb-2">Camera Not Found</h2>
-                        <p class="text-center text-red-500 max-w-md">The selected camera is currently unavailable. Please try again later or choose another camera.</p>
+                        <p class="text-center text-error max-w-md mb-4">The selected camera is currently unavailable. Please try again later or choose another camera.</p>
+                        <button id="retry-button" class="px-4 py-2 bg-tertiary text-light rounded-md hover:bg-secondary transition duration-300 ease-in-out">Retry</button>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-primary text-light mt-auto">
-        <div class="container mx-auto px-4 py-4 text-center">
+    <footer class="bg-primary text-light mt-6">
+        <div class="container mx-auto px-4 py-3 text-center text-sm">
             <p>&copy; 2024 CCTV LIVE JAKARTA. All rights reserved.</p>
         </div>
     </footer>
@@ -93,7 +106,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const cameras = [
-                  { title: "Kamera GBK 1", url: "https://cctv.balitower.co.id/Gelora-017-700470_1/embed.html" },
+                { title: "Kamera GBK 1", url: "https://cctv.balitower.co.id/Gelora-017-700470_1/embed.html" },
                 { title: "Kamera GBK 2", url: "https://cctv.balitower.co.id/Gelora-017-700470_2/embed.html" },
                 { title: "Kamera GBK 3", url: "https://cctv.balitower.co.id/Gelora-017-700470_3/embed.html" },
                 { title: "Kamera GBK 4", url: "https://cctv.balitower.co.id/Gelora-017-700470_4/embed.html" },
@@ -135,17 +148,45 @@
             const cameraContainer = document.getElementById("camera-container");
             const notFoundDiv = document.getElementById("not-found");
             const loadingDiv = document.getElementById("loading");
+            const searchBar = document.getElementById("search-bar");
+            const sidebarToggle = document.getElementById("sidebar-toggle");
+            const sidebar = document.getElementById("sidebar");
+            const prevPageBtn = document.getElementById("prev-page");
+            const nextPageBtn = document.getElementById("next-page");
+            const pageInfo = document.getElementById("page-info");
+            const retryButton = document.getElementById("retry-button");
 
-            cameras.forEach((camera, index) => {
-                const button = document.createElement("button");
-                button.className = "camera-button w-full text-left bg-light hover:bg-tertiary hover:text-white text-gray-800 font-semibold py-2 px-4 rounded transition duration-300 ease-in-out";
-                button.textContent = camera.title;
-                button.addEventListener("click", () => selectCamera(index));
-                cameraButtons.appendChild(button);
-            });
+            let currentPage = 1;
+            const itemsPerPage = 10;
+            let filteredCameras = [...cameras];
+
+            function updatePageInfo() {
+                const totalPages = Math.ceil(filteredCameras.length / itemsPerPage);
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+            }
+
+            function renderCameraButtons() {
+                cameraButtons.innerHTML = '';
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const pageItems = filteredCameras.slice(start, end);
+
+                pageItems.forEach((camera, index) => {
+                    const button = document.createElement("button");
+                    button.className = "camera-button w-full text-left bg-light hover:bg-tertiary hover:text-light text-primary font-semibold py-2 px-4 rounded transition duration-300 ease-in-out shadow-md focus:outline-none focus:ring-2 focus:ring-tertiary";
+                    button.textContent = camera.title;
+                    button.setAttribute('aria-label', `Select ${camera.title}`);
+                    button.addEventListener("click", () => selectCamera(start + index));
+                    cameraButtons.appendChild(button);
+                });
+
+                updatePageInfo();
+            }
 
             function selectCamera(index) {
-                const camera = cameras[index];
+                const camera = filteredCameras[index];
                 const statusUrl = camera.url.replace('embed.html', 'status.json');
 
                 const existingIframe = cameraContainer.querySelector('iframe');
@@ -169,6 +210,7 @@
                             iframe.allowFullscreen = true;
                             iframe.loading = "lazy";
                             iframe.src = camera.url;
+                            iframe.title = camera.title;
                             
                             iframe.onload = () => {
                                 loadingDiv.classList.add("hidden");
@@ -186,18 +228,71 @@
                     });
 
                 document.querySelectorAll(".camera-button").forEach((btn, idx) => {
-                    btn.classList.toggle("bg-tertiary", idx === index);
-                    btn.classList.toggle("text-white", idx === index);
-                    btn.classList.toggle("bg-light", idx !== index);
-                    btn.classList.toggle("text-gray-800", idx !== index);
+                    btn.classList.toggle("bg-tertiary", idx === index % itemsPerPage);
+                    btn.classList.toggle("text-light", idx === index % itemsPerPage);
+                    btn.classList.toggle("bg-light", idx !== index % itemsPerPage);
+                    btn.classList.toggle("text-primary", idx !== index % itemsPerPage);
                 });
             }
 
+            searchBar.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filteredCameras = cameras.filter(camera => 
+                    camera.title.toLowerCase().includes(searchTerm)
+                );
+                currentPage = 1;
+                renderCameraButtons();
+            });
+
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+            });
+
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderCameraButtons();
+                }
+            });
+
+            nextPageBtn.addEventListener('click', () => {
+                if (currentPage < Math.ceil(filteredCameras.length / itemsPerPage)) {
+                    currentPage++;
+                    renderCameraButtons();
+                }
+            });
+
+            retryButton.addEventListener('click', () => {
+                const activeButtonIndex = Array.from(document.querySelectorAll('.camera-button'))
+                    .findIndex(btn => btn.classList.contains('bg-tertiary'));
+                if (activeButtonIndex !== -1) {
+                    selectCamera(activeButtonIndex);
+                }
+            });
+
+            // Initialize
+            renderCameraButtons();
             if (cameras.length > 0) {
                 selectCamera(0);
             }
-        });
-   </script>
-</body>
 
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const buttons = document.querySelectorAll('.camera-button');
+                    const activeIndex = Array.from(buttons).findIndex(btn => btn.classList.contains('bg-tertiary'));
+                    let newIndex;
+                    if (e.key === 'ArrowUp') {
+                        newIndex = (activeIndex - 1 + buttons.length) % buttons.length;
+                    } else {
+                        newIndex = (activeIndex + 1) % buttons.length;
+                    }
+                    buttons[newIndex].focus();
+                    selectCamera((currentPage - 1) * itemsPerPage + newIndex);
+                }
+            });
+        });
+    </script>
+</body>
 </html>
