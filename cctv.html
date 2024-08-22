@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCTV LIVE JAKARTA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3A1078',
+                        secondary: '#4E31AA',
+                        tertiary: '#3795BD',
+                        light: '#F7F7F8',
+                    }
+                }
+            },
+            plugins: [
+                function({ addUtilities }) {
+                    const newUtilities = {
+                        '.scrollbar-thin': {
+                            scrollbarWidth: 'thin',
+                        },
+                        '.scrollbar-webkit': {
+                            '&::-webkit-scrollbar': {
+                                width: '8px',
+                            },
+                            '&::-webkit-scrollbar-track': {
+                                backgroundColor: '#F7F7F8',
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                                backgroundColor: '#3795BD',
+                                borderRadius: '20px',
+                                border: '3px solid #F7F7F8',
+                            },
+                        },
+                    }
+                    addUtilities(newUtilities, ['responsive', 'hover'])
+                }
+            ],
+        }
+    </script>
+</head>
+
+<body class="bg-light min-h-full font-sans text-gray-800 flex flex-col">
+    <header class="bg-gradient-to-r from-primary to-secondary text-light shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-center">CCTV LIVE JAKARTA</h1>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+        <aside class="lg:w-1/4 xl:w-1/5">
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Camera Selection</h2>
+                <div id="camera-buttons" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-webkit">
+                    <!-- Camera buttons will be dynamically inserted here -->
+                </div>
+            </div>
+        </aside>
+
+        <section class="flex-grow">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div id="camera-container" class="relative w-full aspect-video">
+                    <!-- iframe will be created dynamically here -->
+                    <div id="loading" class="absolute inset-0 flex items-center justify-center bg-light">
+                        <svg class="w-12 h-12 text-tertiary animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                    <div id="not-found" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-red-50 text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <h2 class="text-2xl font-bold mb-2">Camera Not Found</h2>
+                        <p class="text-center text-red-500 max-w-md">The selected camera is currently unavailable. Please try again later or choose another camera.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-primary text-light mt-auto">
+        <div class="container mx-auto px-4 py-4 text-center">
+            <p>&copy; 2024 CCTV LIVE JAKARTA. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const cameras = [
+                  { title: "Kamera GBK 1", url: "https://cctv.balitower.co.id/Gelora-017-700470_1/embed.html" },
+                { title: "Kamera GBK 2", url: "https://cctv.balitower.co.id/Gelora-017-700470_2/embed.html" },
+                { title: "Kamera GBK 3", url: "https://cctv.balitower.co.id/Gelora-017-700470_3/embed.html" },
+                { title: "Kamera GBK 4", url: "https://cctv.balitower.co.id/Gelora-017-700470_4/embed.html" },
+                { title: "Kamera GBK 5", url: "https://cctv.balitower.co.id/Gelora-017-700470_5/embed.html" },
+                { title: "Kamera GBK 6", url: "https://cctv.balitower.co.id/Gelora-017-700470_6/embed.html" },
+                { title: "Kamera GBK 7", url: "https://cctv.balitower.co.id/Gelora-017-700470_7/embed.html" },
+                { title: "Kamera GBK 8", url: "https://cctv.balitower.co.id/Gelora-017-700470_8/embed.html" },
+                { title: "Kamera GBK 9", url: "https://cctv.balitower.co.id/Gelora-017-700470_9/embed.html" },
+                { title: "Kamera GBK 10", url: "https://cctv.balitower.co.id/Gelora-012-700388_1/embed.html" },
+                { title: "Kamera GBK 11", url: "https://cctv.balitower.co.id/Gelora-012-700388_2/embed.html" },
+                { title: "Kamera GBK 12", url: "https://cctv.balitower.co.id/Gelora-012-700388_3/embed.html" },
+                { title: "Kamera GBK 13", url: "https://cctv.balitower.co.id/Gelora-012-700388_4/embed.html" },
+                { title: "Kamera 1", url: "https://cctv.balitower.co.id/GBK_C10_01/embed.html" },
+                { title: "Kamera 2", url: "https://cctv.balitower.co.id/GBK_C10_02/embed.html" },
+                { title: "Kamera 3", url: "https://cctv.balitower.co.id/GBK_C10_03/embed.html" },
+                { title: "Kamera 4", url: "https://cctv.balitower.co.id/GBK_C10_04/embed.html" },
+                { title: "Gedung MK 1", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_3/embed.html" },
+                { title: "Gedung MK 2", url: "https://cctv.balitower.co.id/Pospol-Merdeka-Barat-506817_1/embed.html" },
+                { title: "Gedung MK 3", url: "https://cctv.balitower.co.id/Gambir-018-700457_5/embed.html" },
+                { title: "Gedung MK 4", url: "https://cctv.balitower.co.id/Gambir-018-700457_2/embed.html" },
+                { title: "Istana Negara 1", url: "https://cctv.balitower.co.id/Pospol-Merdeka-Utara-506818_1/embed.html" },
+                { title: "Istana Negara 2", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_3/embed.html" },
+                { title: "Istana Negara 3", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_1/embed.html" },
+                { title: "Istana Negara 4", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_2/embed.html" },
+                { title: "Istana Negara 5", url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_3/embed.html" },
+                { title: "Istana Negara 6", url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_2/embed.html" },
+                { title: "Istana Negara 7", url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_1/embed.html" },
+                { title: "Istana Negara 8", url: "https://cctv.balitower.co.id/Monas-Barat-008-506631_1/embed.html" },
+                { title: "Istana Negara 9", url: "https://cctv.balitower.co.id/Monas-Barat-008-506631_2/embed.html" },
+                { title: "Istana Negara 10", url: "https://cctv.balitower.co.id/Monas-Barat-006_b/embed.html" },
+                { title: "Istana Negara 11", url: "https://cctv.balitower.co.id/Monas-Barat-006_c/embed.html" },
+                { title: "Istana Negara 12", url: "https://cctv.balitower.co.id/Monas-Utara-001_b/embed.html" },
+                { title: "Istana Negara 13", url: "https://cctv.balitower.co.id/Monas-Barat-002_b/embed.html" },
+                { title: "Istana Negara 14", url: "https://cctv.balitower.co.id/Monas-Barat-003_a/embed.html" },
+                { title: "Istana Negara 15", url: "https://cctv.balitower.co.id/Monas-Barat-003_b/embed.html" }
+            ];
+
+            const cameraButtons = document.getElementById("camera-buttons");
+            const cameraContainer = document.getElementById("camera-container");
+            const notFoundDiv = document.getElementById("not-found");
+            const loadingDiv = document.getElementById("loading");
+
+            cameras.forEach((camera, index) => {
+                const button = document.createElement("button");
+                button.className = "camera-button w-full text-left bg-light hover:bg-tertiary hover:text-white text-gray-800 font-semibold py-2 px-4 rounded transition duration-300 ease-in-out";
+                button.textContent = camera.title;
+                button.addEventListener("click", () => selectCamera(index));
+                cameraButtons.appendChild(button);
+            });
+
+            function selectCamera(index) {
+                const camera = cameras[index];
+                const statusUrl = camera.url.replace('embed.html', 'status.json');
+
+                const existingIframe = cameraContainer.querySelector('iframe');
+                if (existingIframe) {
+                    existingIframe.remove();
+                }
+
+                notFoundDiv.classList.add("hidden");
+                loadingDiv.classList.remove("hidden");
+
+                fetch(statusUrl)
+                    .then(response => {
+                        if (response.ok) return response.json();
+                        throw new Error('Camera status not found');
+                    })
+                    .then(data => {
+                        if (data && data.availability === "available") {
+                            const iframe = document.createElement('iframe');
+                            iframe.className = "w-full h-full absolute top-0 left-0";
+                            iframe.frameBorder = "0";
+                            iframe.allowFullscreen = true;
+                            iframe.loading = "lazy";
+                            iframe.src = camera.url;
+                            
+                            iframe.onload = () => {
+                                loadingDiv.classList.add("hidden");
+                            };
+
+                            cameraContainer.appendChild(iframe);
+                        } else {
+                            throw new Error('Camera is not available');
+                        }
+                    })
+                    .catch(error => {
+                        loadingDiv.classList.add("hidden");
+                        notFoundDiv.classList.remove("hidden");
+                        console.error('Error loading camera:', error.message);
+                    });
+
+                document.querySelectorAll(".camera-button").forEach((btn, idx) => {
+                    btn.classList.toggle("bg-tertiary", idx === index);
+                    btn.classList.toggle("text-white", idx === index);
+                    btn.classList.toggle("bg-light", idx !== index);
+                    btn.classList.toggle("text-gray-800", idx !== index);
+                });
+            }
+
+            if (cameras.length > 0) {
+                selectCamera(0);
+            }
+        });
+   </script>
+</body>
+
+</html>
