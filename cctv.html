@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,16 +11,18 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#402E7A',
-                        secondary: '#4C3BCF',
-                        tertiary: '#4B70F5',
-                        light: '#3DC2EC',
+                        primary: '#3A1078',
+                        secondary: '#4E31AA',
+                        tertiary: '#3795BD',
+                        light: '#F7F7F8',
                         error: '#FF0000',
                     }
                 }
             },
             plugins: [
-                function({ addUtilities }) {
+                function({
+                    addUtilities
+                }) {
                     const newUtilities = {
                         '.scrollbar-thin': {
                             scrollbarWidth: 'thin',
@@ -105,43 +108,150 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const cameras = [
-                { title: "Kamera GBK 1", url: "https://cctv.balitower.co.id/Gelora-017-700470_1/embed.html" },
-                { title: "Kamera GBK 2", url: "https://cctv.balitower.co.id/Gelora-017-700470_2/embed.html" },
-                { title: "Kamera GBK 3", url: "https://cctv.balitower.co.id/Gelora-017-700470_3/embed.html" },
-                { title: "Kamera GBK 4", url: "https://cctv.balitower.co.id/Gelora-017-700470_4/embed.html" },
-                { title: "Kamera GBK 5", url: "https://cctv.balitower.co.id/Gelora-017-700470_5/embed.html" },
-                { title: "Kamera GBK 6", url: "https://cctv.balitower.co.id/Gelora-017-700470_6/embed.html" },
-                { title: "Kamera GBK 7", url: "https://cctv.balitower.co.id/Gelora-017-700470_7/embed.html" },
-                { title: "Kamera GBK 8", url: "https://cctv.balitower.co.id/Gelora-017-700470_8/embed.html" },
-                { title: "Kamera GBK 9", url: "https://cctv.balitower.co.id/Gelora-017-700470_9/embed.html" },
-                { title: "Kamera GBK 10", url: "https://cctv.balitower.co.id/Gelora-012-700388_1/embed.html" },
-                { title: "Kamera GBK 11", url: "https://cctv.balitower.co.id/Gelora-012-700388_2/embed.html" },
-                { title: "Kamera GBK 12", url: "https://cctv.balitower.co.id/Gelora-012-700388_3/embed.html" },
-                { title: "Kamera GBK 13", url: "https://cctv.balitower.co.id/Gelora-012-700388_4/embed.html" },
-                { title: "Kamera 1", url: "https://cctv.balitower.co.id/GBK_C10_01/embed.html" },
-                { title: "Kamera 2", url: "https://cctv.balitower.co.id/GBK_C10_02/embed.html" },
-                { title: "Kamera 3", url: "https://cctv.balitower.co.id/GBK_C10_03/embed.html" },
-                { title: "Kamera 4", url: "https://cctv.balitower.co.id/GBK_C10_04/embed.html" },
-                { title: "Gedung MK 1", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_3/embed.html" },
-                { title: "Gedung MK 2", url: "https://cctv.balitower.co.id/Pospol-Merdeka-Barat-506817_1/embed.html" },
-                { title: "Gedung MK 3", url: "https://cctv.balitower.co.id/Gambir-018-700457_5/embed.html" },
-                { title: "Gedung MK 4", url: "https://cctv.balitower.co.id/Gambir-018-700457_2/embed.html" },
-                { title: "Istana Negara 1", url: "https://cctv.balitower.co.id/Pospol-Merdeka-Utara-506818_1/embed.html" },
-                { title: "Istana Negara 2", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_3/embed.html" },
-                { title: "Istana Negara 3", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_1/embed.html" },
-                { title: "Istana Negara 4", url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_2/embed.html" },
-                { title: "Istana Negara 5", url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_3/embed.html" },
-                { title: "Istana Negara 6", url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_2/embed.html" },
-                { title: "Istana Negara 7", url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_1/embed.html" },
-                { title: "Istana Negara 8", url: "https://cctv.balitower.co.id/Monas-Barat-008-506631_1/embed.html" },
-                { title: "Istana Negara 9", url: "https://cctv.balitower.co.id/Monas-Barat-008-506631_2/embed.html" },
-                { title: "Istana Negara 10", url: "https://cctv.balitower.co.id/Monas-Barat-006_b/embed.html" },
-                { title: "Istana Negara 11", url: "https://cctv.balitower.co.id/Monas-Barat-006_c/embed.html" },
-                { title: "Istana Negara 12", url: "https://cctv.balitower.co.id/Monas-Utara-001_b/embed.html" },
-                { title: "Istana Negara 13", url: "https://cctv.balitower.co.id/Monas-Barat-002_b/embed.html" },
-                { title: "Istana Negara 14", url: "https://cctv.balitower.co.id/Monas-Barat-003_a/embed.html" },
-                { title: "Istana Negara 15", url: "https://cctv.balitower.co.id/Monas-Barat-003_b/embed.html" }
+            const cameras = [{
+                    title: "Kamera GBK 1",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_1/embed.html"
+                },
+                {
+                    title: "Kamera GBK 2",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_2/embed.html"
+                },
+                {
+                    title: "Kamera GBK 3",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_3/embed.html"
+                },
+                {
+                    title: "Kamera GBK 4",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_4/embed.html"
+                },
+                {
+                    title: "Kamera GBK 5",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_5/embed.html"
+                },
+                {
+                    title: "Kamera GBK 6",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_6/embed.html"
+                },
+                {
+                    title: "Kamera GBK 7",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_7/embed.html"
+                },
+                {
+                    title: "Kamera GBK 8",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_8/embed.html"
+                },
+                {
+                    title: "Kamera GBK 9",
+                    url: "https://cctv.balitower.co.id/Gelora-017-700470_9/embed.html"
+                },
+                {
+                    title: "Kamera GBK 10",
+                    url: "https://cctv.balitower.co.id/Gelora-012-700388_1/embed.html"
+                },
+                {
+                    title: "Kamera GBK 11",
+                    url: "https://cctv.balitower.co.id/Gelora-012-700388_2/embed.html"
+                },
+                {
+                    title: "Kamera GBK 12",
+                    url: "https://cctv.balitower.co.id/Gelora-012-700388_3/embed.html"
+                },
+                {
+                    title: "Kamera GBK 13",
+                    url: "https://cctv.balitower.co.id/Gelora-012-700388_4/embed.html"
+                },
+                {
+                    title: "Kamera 1",
+                    url: "https://cctv.balitower.co.id/GBK_C10_01/embed.html"
+                },
+                {
+                    title: "Kamera 2",
+                    url: "https://cctv.balitower.co.id/GBK_C10_02/embed.html"
+                },
+                {
+                    title: "Kamera 3",
+                    url: "https://cctv.balitower.co.id/GBK_C10_03/embed.html"
+                },
+                {
+                    title: "Kamera 4",
+                    url: "https://cctv.balitower.co.id/GBK_C10_04/embed.html"
+                },
+                {
+                    title: "Gedung MK 1",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_3/embed.html"
+                },
+                {
+                    title: "Gedung MK 2",
+                    url: "https://cctv.balitower.co.id/Pospol-Merdeka-Barat-506817_1/embed.html"
+                },
+                {
+                    title: "Gedung MK 3",
+                    url: "https://cctv.balitower.co.id/Gambir-018-700457_5/embed.html"
+                },
+                {
+                    title: "Gedung MK 4",
+                    url: "https://cctv.balitower.co.id/Gambir-018-700457_2/embed.html"
+                },
+                {
+                    title: "Istana Negara 1",
+                    url: "https://cctv.balitower.co.id/Pospol-Merdeka-Utara-506818_1/embed.html"
+                },
+                {
+                    title: "Istana Negara 2",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_3/embed.html"
+                },
+                {
+                    title: "Istana Negara 3",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_1/embed.html"
+                },
+                {
+                    title: "Istana Negara 4",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-010-506633_2/embed.html"
+                },
+                {
+                    title: "Istana Negara 5",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_3/embed.html"
+                },
+                {
+                    title: "Istana Negara 6",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_2/embed.html"
+                },
+                {
+                    title: "Istana Negara 7",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-009-506632_1/embed.html"
+                },
+                {
+                    title: "Istana Negara 8",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-008-506631_1/embed.html"
+                },
+                {
+                    title: "Istana Negara 9",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-008-506631_2/embed.html"
+                },
+                {
+                    title: "Istana Negara 10",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-006_b/embed.html"
+                },
+                {
+                    title: "Istana Negara 11",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-006_c/embed.html"
+                },
+                {
+                    title: "Istana Negara 12",
+                    url: "https://cctv.balitower.co.id/Monas-Utara-001_b/embed.html"
+                },
+                {
+                    title: "Istana Negara 13",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-002_b/embed.html"
+                },
+                {
+                    title: "Istana Negara 14",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-003_a/embed.html"
+                },
+                {
+                    title: "Istana Negara 15",
+                    url: "https://cctv.balitower.co.id/Monas-Barat-003_b/embed.html"
+                }
             ];
 
             const cameraButtons = document.getElementById("camera-buttons");
@@ -211,7 +321,7 @@
                             iframe.loading = "lazy";
                             iframe.src = camera.url;
                             iframe.title = camera.title;
-                            
+
                             iframe.onload = () => {
                                 loadingDiv.classList.add("hidden");
                             };
@@ -237,7 +347,7 @@
 
             searchBar.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
-                filteredCameras = cameras.filter(camera => 
+                filteredCameras = cameras.filter(camera =>
                     camera.title.toLowerCase().includes(searchTerm)
                 );
                 currentPage = 1;
@@ -295,4 +405,5 @@
         });
     </script>
 </body>
+
 </html>
