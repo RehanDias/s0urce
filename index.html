@@ -348,9 +348,7 @@
 
          🔒 Arcan1ST-RDP`;
 
-               const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-                  message
-               )}`;
+              const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(message)}`;
                window.open(whatsappUrl, "_blank");
             } catch (error) {
                console.error("Error:", error);
