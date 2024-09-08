@@ -130,7 +130,21 @@
   },
   "nitter": {
     "clearnet": [
-     "https://nitter.poast.org/"
+      "https://nitter.privacydev.net",
+      "https://nitter.poast.org",
+      "https://nitter.lucabased.xyz",
+      "https://nitter.kavin.rocks",
+      "https://nitter.tiekoetter.com",
+      "https://nitter.qwik.space",
+      "https://bird.habedieeh.re",
+      "https://t.com.sb",
+      "https://nitter.lunar.icu",
+      "https://nitter.moomoo.me",
+      "https://nitter.kylrth.com",
+      "https://nitter.io.lol",
+      "https://nitter.rawbit.ninja",
+      "https://n.populas.no",
+      "https://nitter.holo-mix.com"
     ],
     "tor": [
       "http://nitter.l4qlywnpwqsluw65ts7md3khrivpirse744un3x7mlskqauz5pyuzgqd.onion",
