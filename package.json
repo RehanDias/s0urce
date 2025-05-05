@@ -9,12 +9,17 @@
     "type": "git",
     "url": "git+https://github.com/RehanDias/s0urce.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/RehanDias/s0urce/issues"
   },
   "homepage": "https://github.com/RehanDias/s0urce#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "jsonfile": "^6.1.0",
+    "moment": "^2.30.1",
+    "random": "^5.4.0",
+    "simple-git": "^3.27.0"
+  }
 }
