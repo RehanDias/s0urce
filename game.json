@@ -1,0 +1,20 @@
+[
+  {
+    "id": "violence-district",
+    "name": "Violence District",
+    "description": "High-intensity combat in our exclusive private server. No lag, no mercy.",
+    "joinLink": "#",
+    "icon": "fa-gun",
+    "accent": "#dc2626",
+    "ar": "220,38,38"
+  },
+  {
+    "id": "antarctica",
+    "name": "Antarctica",
+    "description": "Explore the frozen realm in a smooth private instance with zero griefers.",
+    "joinLink": "#",
+    "icon": "fa-snowflake",
+    "accent": "#67e8f9",
+    "ar": "103,232,249"
+  }
+]
